@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@100..900&display=swap');
+
+* {
+  font-family: "Outfit", sans-serif;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #fafafa;
+  --text_color: #27272a;
+  --border_nav: #27272a;
+  --bg_header: #ffffff;
+}
+body {
+    background-color: var(--primary);
+    color: #fff;
+    font-family: "Outfit", sans-serif;
+}
+/* Theme */
+
+.dark {
+    --primary: #000000;
+    --text_color: #f4f4f5;
+    --border_nav: #cacaca84;
+    --bg_header: #252529;
+}
+
+/* active */
+.active {
+    background-color: #e11d48;
+    color: #f4f4f5;
+}
