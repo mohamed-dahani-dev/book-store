@@ -8,7 +8,7 @@ const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <div className="border-b border-border_nav text-text_color py-5 flex items-center justify-center max-sm:justify-between">
+    <div className="border-b-2 border-rose-300 text-text_color py-5 flex items-center justify-center max-sm:justify-between">
       <div />
       <nav className="flex items-center gap-14 sticky top-0 max-sm:hidden">
         <NavLink
@@ -18,16 +18,10 @@ const NavBar = () => {
           Home
         </NavLink>
         <NavLink
-          to="/books"
+          to="/book"
           className="py-2 px-4 rounded-md transition-all font-semibold"
         >
           Books
-        </NavLink>
-        <NavLink
-          to="/category"
-          className="py-2 px-4 rounded-md transition-all font-semibold"
-        >
-          Category
         </NavLink>
         <NavLink
           to="/about"
@@ -46,7 +40,14 @@ const NavBar = () => {
       {showMenu && (
         <div className="fixed bg-[#00000076] inset-0 z-50">
           <nav className="absolute right-0 w-2/3 h-full transition-all bg-bg_header p-5 flex flex-col gap-4">
-            <FontAwesomeIcon className="self-end cursor-pointer mb-5" onClick={() => { setShowMenu(false) }} size="2x" icon={faXmark} />
+            <FontAwesomeIcon
+              className="self-end cursor-pointer mb-5"
+              onClick={() => {
+                setShowMenu(false);
+              }}
+              size="2x"
+              icon={faXmark}
+            />
             <NavLink
               onClick={() => {
                 setShowMenu(false);
@@ -65,15 +66,7 @@ const NavBar = () => {
             >
               Books
             </NavLink>
-            <NavLink
-              onClick={() => {
-                setShowMenu(false);
-              }}
-              to="/category"
-              className="py-2 px-4 rounded-md transition-all font-semibold"
-            >
-              Category
-            </NavLink>
+           
             <NavLink
               onClick={() => {
                 setShowMenu(false);
