@@ -4,7 +4,8 @@ import {
   faMagnifyingGlass,
   faMoon,
   faSun,
-  faBook
+  faBook,
+  faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
@@ -42,6 +43,9 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-5">
+        <Link to="/cart">
+          <FontAwesomeIcon className="text-lg" icon={faCartShopping} />
+        </Link>
           <Link to="/login" className="border-[1.5px] py-1 px-5 rounded-md transition-all hover:bg-white hover:text-rose-600">
             Login
           </Link>

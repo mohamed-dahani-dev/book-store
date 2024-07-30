@@ -71,27 +71,35 @@ const Login = () => {
           required
         />
       </div>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="password">Enter Password:</label>
-        <input
-          className="border border-black w-full px-2 py-3 rounded-md outline-none"
-          type="password"
-          placeholder="Enter Password"
-          id="password"
-          name="password"
-          required
-        />
-      </div>
+      {currentState === "Forgot Password" ? (
+        <></>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <label htmlFor="password">Enter Password:</label>
+          <input
+            className="border border-black w-full px-2 py-3 rounded-md outline-none"
+            type="password"
+            placeholder="Enter Password"
+            id="password"
+            name="password"
+            required
+          />
+        </div>
+      )}
       <button
         type="submit"
         className="border-[1.5px] rounded-md border-rose-600 py-2 px-8 self-center transition-all hover:bg-rose-600 hover:text-white"
       >
         {currentState}
       </button>
-      <div className="flex gap-2">
-        <input type="checkbox" required />
-        <p>Bye, Continuig i agree to the terms of use & privacy policy.</p>
-      </div>
+      {currentState === "Forgot Password" ? (
+        <></>
+      ) : (
+        <div className="flex gap-2">
+          <input type="checkbox" required />
+          <p>Bye, Continuig i agree to the terms of use & privacy policy.</p>
+        </div>
+      )}
       {currentState === "Login" ? (
         <>
           <p className="text-center">
@@ -105,7 +113,12 @@ const Login = () => {
               Click Here!
             </span>
           </p>{" "}
-          <p className="text-center underline text-rose-600 cursor-pointer">
+          <p
+            className="text-center underline text-rose-600 cursor-pointer"
+            onClick={() => {
+              setCurrentState("Forgot Password");
+            }}
+          >
             Forgot Password?
           </p>
         </>
