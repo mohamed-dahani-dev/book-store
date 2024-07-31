@@ -18,15 +18,15 @@ const categoriesList = [
     picture: romanceImg,
   },
   {
-    name: "ACTION & ADVENTURE",
+    name: "ACTION AND ADVENTURE",
     picture: actionadentureImg,
   },
   {
-    name: "MYSTERY & THRILLER",
+    name: "MYSTERY AND THRILLER",
     picture: mysterythrillerImg,
   },
   {
-    name: "BIOGRAPHIES & HISTORY",
+    name: "BIOGRAPHIES AND HISTORY",
     picture: biographieshistoryImg,
   },
   {
