@@ -7,39 +7,35 @@ import { Link, useLocation } from "react-router-dom";
 
 const BookList = () => {
   const [bookFilter, setBookFilter] = useState(Book);
-  const { category, setCategory, setChooseBook } =
-    useContext(StoreContext);
-
+  const { category, setCategory, setChooseBook } = useContext(StoreContext);
   const location = useLocation();
+
+  const filterBooks = (books, categoryFilter, searchQuery) => {
+    return books
+      .filter((book) =>
+        categoryFilter === "All" ? true : book.category === categoryFilter
+      )
+      .filter((book) =>
+        searchQuery ? book.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
+      );
+  };
 
   const handleClick = (bookCategory) => {
     setCategory(bookCategory);
-
-    if (bookCategory === "All") {
-      setBookFilter(Book);
-    } else {
-      const filterBook = Book.filter((item) => item.category === bookCategory);
-      setBookFilter(filterBook);
-    }
   };
 
   useEffect(() => {
-    if (category === "All") {
-      setBookFilter(Book);
-    } else {
-      const filterBook = Book.filter((item) => item.category === category);
-      setBookFilter(filterBook);
-    }
-  }, [category]);
-
-  // Parse query parameters
-  useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const categoryParam = searchParams.get("Category");
+    const categoryParam = searchParams.get("category");
+    const queryParam = searchParams.get("query");
+
     if (categoryParam) {
-      handleClick(categoryParam);
+      setCategory(categoryParam);
     }
-  }, [location.search]);
+
+    const filteredBooks = filterBooks(Book, categoryParam || category, queryParam);
+    setBookFilter(filteredBooks);
+  }, [location.search, category]);
 
   return (
     <section className="mt-10">
@@ -49,7 +45,7 @@ const BookList = () => {
           name=""
           id=""
           className="text-black text-center p-[2px] outline-none rounded-md border-2"
-          value={category} // set the current value of the select element
+          value={category}
           onChange={(e) => handleClick(e.target.value)}
         >
           <option value="All">All</option>

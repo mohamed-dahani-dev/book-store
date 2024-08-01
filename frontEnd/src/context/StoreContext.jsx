@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const StoreContext = createContext(null);
 
@@ -11,7 +11,16 @@ const StoreContextProvider = (props) => {
   const [chooseBook, setChooseBook] = useState(null);
 
   // add to cart
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(
+    localStorage.getItem("bookCartItems")
+      ? JSON.parse(localStorage.getItem("bookCartItems"))
+      : []
+  );
+
+  // Update localStorage whenever cartItems changes
+  useEffect(() => {
+    localStorage.setItem("bookCartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (book) => {
     setCartItems((prevItems) => [...prevItems, book]);
@@ -32,10 +41,12 @@ const StoreContextProvider = (props) => {
     addToCart,
     removeFromCart,
   };
+
   return (
     <StoreContext.Provider value={contextValue}>
       {props.children}
     </StoreContext.Provider>
   );
 };
+
 export default StoreContextProvider;

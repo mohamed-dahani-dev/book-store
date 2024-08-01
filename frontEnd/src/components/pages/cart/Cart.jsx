@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   // data of books cart
@@ -11,6 +12,19 @@ const Cart = () => {
 
   // Calculate total price
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
+
+  // Procced to payment
+  const navigate = useNavigate();
+  const proccedToPayment = () => {
+    // check if the cart item is empty
+    if (cartItems.length === 0) {
+      toast.error("Please add book to cart first!");
+    } else if (!localStorage.getItem("token")) {
+      toast.error("You have Login in First");
+    } else {
+      navigate("/payment");
+    }
+  };
 
   return (
     <div className="mt-10">
@@ -55,7 +69,10 @@ const Cart = () => {
           <h1>Total:</h1>
           <h1 className="text-rose-600">${totalPrice}</h1>
         </div>
-        <button className="bg-rose-600 px-8 py-3 rounded-md block my-10 mx-auto transition-all hover:bg-rose-500">
+        <button
+          className="bg-rose-600 px-8 py-3 rounded-md block my-10 mx-auto transition-all hover:bg-rose-500"
+          onClick={proccedToPayment}
+        >
           PROCEED TO PAYMENT
         </button>
       </div>

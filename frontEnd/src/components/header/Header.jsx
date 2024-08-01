@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -11,10 +11,8 @@ import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
 
 const Header = () => {
-  // set the theme
-  const [theme, setTheme] = useState(
-    localStorage.getItem("currentMode") ?? "light"
-  );
+  // State for theme
+  const [theme, setTheme] = useState(localStorage.getItem("currentMode") ?? "light");
   useEffect(() => {
     if (theme === "light") {
       document.body.classList.remove("dark");
@@ -25,8 +23,21 @@ const Header = () => {
     }
   }, [theme]);
 
-  // element of cart
-  const { cartItems } = useContext(StoreContext);
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); // To programmatically navigate
+
+  // Context for cart
+  const { cartItems, setCategory } = useContext(StoreContext);
+
+  // Handle search
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Navigate to search results page with the search query
+      navigate(`/book?query=${encodeURIComponent(searchQuery.trim())}`);
+      setCategory("All")
+    }
+  };
 
   return (
     <div className="bg-rose-600 text-white p-4 flex flex-col gap-5">
@@ -42,9 +53,14 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search by title"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="p-2 text-black outline-none rounded-l-md"
           />
-          <button className="bg-rose-400 py-2 px-4 rounded-r-md transition-all hover:bg-rose-300">
+          <button
+            className="bg-rose-400 py-2 px-4 rounded-r-md transition-all hover:bg-rose-300"
+            onClick={handleSearch}
+          >
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
@@ -55,7 +71,7 @@ const Header = () => {
             {cartItems.length === 0 ? (
               <></>
             ) : (
-              <span className=" absolute -left-2 -top-2 h-5 w-5 bg-teal-600 rounded-full font-bold flex items-center justify-center">
+              <span className="absolute -left-2 -top-2 h-5 w-5 bg-teal-600 rounded-full font-bold flex items-center justify-center">
                 {cartItems.length}
               </span>
             )}
@@ -69,14 +85,10 @@ const Header = () => {
           <button
             className="border-[1.5px] rounded-full h-9 w-9 flex items-center justify-center"
             onClick={() => {
-              // send value to ls
-              localStorage.setItem(
-                "currentMode",
-                theme === "dark" ? "light" : "dark"
-              );
-
-              // get value from ls
-              setTheme(localStorage.getItem("currentMode"));
+              // Toggle theme
+              const newTheme = theme === "dark" ? "light" : "dark";
+              localStorage.setItem("currentMode", newTheme);
+              setTheme(newTheme);
             }}
           >
             {theme === "light" ? (
@@ -87,13 +99,18 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <div className="hidden  max-sm:flex items-center justify-center">
+      <div className="hidden max-sm:flex items-center justify-center">
         <input
           type="text"
           placeholder="Search by title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="p-2 text-black outline-none rounded-l-md"
         />
-        <button className="bg-rose-400 py-2 px-4 rounded-r-md transition-all hover:bg-rose-300">
+        <button
+          className="bg-rose-400 py-2 px-4 rounded-r-md transition-all hover:bg-rose-300"
+          onClick={handleSearch}
+        >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
       </div>
