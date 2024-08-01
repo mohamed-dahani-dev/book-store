@@ -4,6 +4,8 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 
+import { toast } from "react-toastify";
+
 const BookInfo = () => {
   // data of choose book
   const { chooseBook, addToCart } = useContext(StoreContext);
@@ -39,7 +41,13 @@ const BookInfo = () => {
             <span className="font-bold text-rose-600">${chooseBook.price}</span>
           </p>
         </div>
-        <button className="bg-teal-500 text-white px-5 py-2 rounded-md transition-all hover:bg-teal-400" onClick={() => { addToCart(chooseBook) }}>
+        <button
+          className="bg-teal-500 text-white px-5 py-2 rounded-md transition-all hover:bg-teal-400"
+          onClick={() => {
+            addToCart(chooseBook);
+            toast.success("Book added successfully");
+          }}
+        >
           Add To Cart
         </button>
       </div>

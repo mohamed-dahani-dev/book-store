@@ -3,9 +3,11 @@ import { faCartShopping, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 
+import { toast } from "react-toastify";
+
 const Cart = () => {
   // data of books cart
-  const { cartItems } = useContext(StoreContext);
+  const { cartItems, removeFromCart } = useContext(StoreContext);
 
   // Calculate total price
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
@@ -37,7 +39,12 @@ const Cart = () => {
           />
           <p className="text-text_color">{item.title}</p>
           <p className="text-rose-600 font-semibold">${item.price}</p>
-          <button>
+          <button
+            onClick={() => {
+              removeFromCart(item._id);
+              toast.error("Removed book successfully");
+            }}
+          >
             <FontAwesomeIcon className="text-rose-600" icon={faTrash} />
           </button>
         </div>

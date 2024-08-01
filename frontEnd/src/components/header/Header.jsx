@@ -5,9 +5,10 @@ import {
   faMoon,
   faSun,
   faBook,
-  faCartShopping
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { StoreContext } from "../../context/StoreContext";
 
 const Header = () => {
   // set the theme
@@ -24,10 +25,16 @@ const Header = () => {
     }
   }, [theme]);
 
+  // element of cart
+  const { cartItems } = useContext(StoreContext);
+
   return (
     <div className="bg-rose-600 text-white p-4 flex flex-col gap-5">
       <header className="flex items-center justify-between gap-5">
-        <Link to="/" className="text-3xl font-bold flex gap-2 items-center max-sm:text-xl">
+        <Link
+          to="/"
+          className="text-3xl font-bold flex gap-2 items-center max-sm:text-xl"
+        >
           Book Store
           <FontAwesomeIcon icon={faBook} />
         </Link>
@@ -43,10 +50,20 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-5">
-        <Link to="/cart">
-          <FontAwesomeIcon className="text-lg" icon={faCartShopping} />
-        </Link>
-          <Link to="/login" className="border-[1.5px] py-1 px-5 rounded-md transition-all hover:bg-white hover:text-rose-600">
+          <Link to="/cart" className="relative">
+            <FontAwesomeIcon className="text-lg" icon={faCartShopping} />
+            {cartItems.length === 0 ? (
+              <></>
+            ) : (
+              <span className=" absolute -left-2 -top-2 h-5 w-5 bg-teal-600 rounded-full font-bold flex items-center justify-center">
+                {cartItems.length}
+              </span>
+            )}
+          </Link>
+          <Link
+            to="/login"
+            className="border-[1.5px] py-1 px-5 rounded-md transition-all hover:bg-white hover:text-rose-600"
+          >
             Login
           </Link>
           <button

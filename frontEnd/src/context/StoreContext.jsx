@@ -17,6 +17,11 @@ const StoreContextProvider = (props) => {
     setCartItems((prevItems) => [...prevItems, book]);
   };
 
+  // remove from cart
+  const removeFromCart = (bookId) => {
+    setCartItems((prev) => prev.filter((book) => book._id !== bookId));
+  };
+
   const contextValue = {
     category,
     setCategory,
@@ -25,6 +30,7 @@ const StoreContextProvider = (props) => {
     cartItems,
     setCartItems,
     addToCart,
+    removeFromCart,
   };
   return (
     <StoreContext.Provider value={contextValue}>
