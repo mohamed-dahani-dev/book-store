@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 
 const BookInfo = () => {
   // data of choose book
-  const { chooseBook, addToCart } = useContext(StoreContext);
+  const { chooseBook, addToCart, cartItems } = useContext(StoreContext);
+
   return (
     <section className="mt-10 text-text_color flex gap-10 max-sm:flex-col">
       <div className="text-sm max-sm:flex flex-col items-center">
@@ -44,8 +45,15 @@ const BookInfo = () => {
         <button
           className="bg-teal-500 text-white px-5 py-2 rounded-md transition-all hover:bg-teal-400"
           onClick={() => {
-            addToCart(chooseBook);
-            toast.success("Book added successfully");
+            const isBookInCart = cartItems.some(
+              (item) => item._id === chooseBook._id
+            );
+            if (isBookInCart) {
+              toast.error("Book already added");
+            } else {
+              addToCart(chooseBook);
+              toast.success("Book added successfully");
+            }
           }}
         >
           Add To Cart
