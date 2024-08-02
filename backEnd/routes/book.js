@@ -1,27 +1,25 @@
 const express = require("express");
-
 // create router
 const router = express.Router();
+// import the controllers
+const { getAllBooks, addBook } = require("../controllers/bookController");
+// import multer
+const multer = require("multer");
 
-// import book model
-const { Book, validateCreateBook } = require("../models/Book");
+// get all books
+router.get("/book", getAllBooks);
 
-/**
-@desc get all books
-@route /book
-@method get
-@access public
-**/
-
-router.get("/book", async (req, res) => {
-  try {
-    const book = await Book.find();
-    res.status(200).json({ data: book, success: true });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Something went wrong", success: false });
-  }
+// image storage engine
+const storage = multer.diskStorage({
+  destination: "uploads",
+  filename: (req, file, cb) => {
+    return cb(null, `${Date.now()}${file.originalname}`);
+  },
 });
+const upload = multer({ storage: storage });
+
+// add new book
+router.post("/add", upload.single("image"), addBook);
 
 // export the router
 module.exports = router;

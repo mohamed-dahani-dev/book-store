@@ -10,7 +10,6 @@ const bookSchema = new mongoose.Schema(
     image: {
       type: String,
       trim: true,
-      required: true,
     },
     title: {
       type: String,
@@ -74,14 +73,14 @@ const bookSchema = new mongoose.Schema(
 // validation of create a book
 const validateCreateBook = (bodyParameter) => {
   const schema = Joi.object({
-    image: Joi.string().trim().required(),
+    image: Joi.string().trim(),
     title: Joi.string().trim().min(1).max(255).required(),
     description: Joi.string().trim().min(10).required(),
     author: Joi.string().trim().min(1).max(255).required(),
-    ISBN: Joi.string().trim().min(3).max(13).unique().required(),
-    pages: Joi.number().trim().min(1).required(),
-    rate: Joi.number().trim().min(0).max(5).required(),
-    price: Joi.number().trim().min(0).max(9999).required(),
+    ISBN: Joi.string().trim().min(3).max(13).required(),
+    pages: Joi.number().min(1).required(),
+    rate: Joi.number().min(0).max(5).required(),
+    price: Joi.number().min(0).max(9999).required(),
     category: Joi.string().trim().min(3).max(100).required(),
   });
   return schema.validate(bodyParameter);

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const connectToMongoDB = require("./config/db");
+const path = require("path");
 
 // run dotenv
 dotenv.config();
@@ -13,7 +14,8 @@ connectToMongoDB();
 const bookPath = require("./routes/book"); // import books from routes files
 
 // middlewares
-
+app.use(express.json()); // read the body parameters
+app.use("/images", express.static(path.join(__dirname, "uploads/images"))); // read the static file like images
 // call all routes
 app.use("/", bookPath);
 
