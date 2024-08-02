@@ -9,6 +9,14 @@ dotenv.config();
 // connect to MongoDB
 connectToMongoDB();
 
+// get the path of routes
+const bookPath = require("./routes/book"); // import books from routes files
+
+// middlewares
+
+// call all routes
+app.use("/", bookPath);
+
 // run the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
