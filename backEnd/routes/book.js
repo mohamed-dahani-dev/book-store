@@ -2,7 +2,12 @@ const express = require("express");
 // create router
 const router = express.Router();
 // import the controllers
-const { getAllBooks, addBook } = require("../controllers/bookController");
+const {
+  getAllBooks,
+  addBook,
+  updateBook,
+  deleteBook,
+} = require("../controllers/bookController");
 // import multer
 const multer = require("multer");
 
@@ -20,6 +25,12 @@ const upload = multer({ storage: storage });
 
 // add new book
 router.post("/add", upload.single("image"), addBook);
+
+// update book
+router.put("/update/:id", upload.single("image"), updateBook);
+
+// delete book
+router.delete("/book/:id", deleteBook);
 
 // export the router
 module.exports = router;

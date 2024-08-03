@@ -86,8 +86,24 @@ const validateCreateBook = (bodyParameter) => {
   return schema.validate(bodyParameter);
 };
 
+// validation of update a book
+const validateUpdateBook = (bodyParameter) => {
+  const schema = Joi.object({
+    image: Joi.string().trim(),
+    title: Joi.string().trim().min(1).max(255),
+    description: Joi.string().trim().min(10),
+    author: Joi.string().trim().min(1).max(255),
+    ISBN: Joi.string().trim().min(3).max(13),
+    pages: Joi.number().min(1),
+    rate: Joi.number().min(0).max(5),
+    price: Joi.number().min(0).max(9999),
+    category: Joi.string().trim().min(3).max(100),
+  });
+  return schema.validate(bodyParameter);
+};
+
 // create model of book
 const Book = mongoose.model("Book", bookSchema);
 
 // export module
-module.exports = { Book, validateCreateBook };
+module.exports = { Book, validateCreateBook, validateUpdateBook };

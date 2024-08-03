@@ -15,7 +15,7 @@ const bookPath = require("./routes/book"); // import books from routes files
 
 // middlewares
 app.use(express.json()); // read the body parameters
-app.use("/images", express.static(path.join(__dirname, "uploads/images"))); // read the static file like images
+app.use("/images", express.static("uploads")); // read the static file like images
 // call all routes
 app.use("/", bookPath);
 
