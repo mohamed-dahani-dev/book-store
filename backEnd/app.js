@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
+const cors = require("cors");
 const connectToMongoDB = require("./config/db");
-const path = require("path");
 
 // run dotenv
 dotenv.config();
@@ -15,6 +15,7 @@ const bookPath = require("./routes/book"); // import books from routes files
 
 // middlewares
 app.use(express.json()); // read the body parameters
+app.use(cors()); // use the api from anywhere
 app.use("/images", express.static("uploads")); // read the static file like images
 // call all routes
 app.use("/", bookPath);
