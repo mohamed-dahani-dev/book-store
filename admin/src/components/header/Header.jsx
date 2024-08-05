@@ -7,6 +7,7 @@ import {
   faChevronDown,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   // State for theme
@@ -25,9 +26,9 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center max-sm:flex-col gap-5">
       <div className="flex gap-2 items-center max-sm:gap-1">
-        <h1 className="text-2xl font-bold text-rose-600 max-sm:text-lg">
+        <Link to="/" className="text-2xl font-bold text-rose-600 max-sm:text-lg">
           Admin Panel
-        </h1>
+        </Link>
         <FontAwesomeIcon className="text-2xl text-rose-600" icon={faBook} />
       </div>
 

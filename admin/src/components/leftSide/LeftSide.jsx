@@ -4,7 +4,7 @@ import { faPlus, faList } from "@fortawesome/free-solid-svg-icons";
 
 const LeftSide = () => {
   return (
-    <section className="bg-teal-500 px-3 py-5 -mx-10 rounded-r-md h-[100vh]">
+    <section className="bg-teal-500 px-3 py-5 -mx-10 rounded-r-md h-[100vh] min-w-40">
       <nav className="flex flex-col gap-2">
         <NavLink
           to="/add"

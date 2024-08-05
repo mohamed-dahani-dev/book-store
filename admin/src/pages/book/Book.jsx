@@ -62,7 +62,7 @@ const Book = ({ url }) => {
             <p>${item.price}</p>
             <p>{item.category}</p>
             <div className="flex gap-2">
-              <button className="bg-blue-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-red-500">
+              <button className="bg-blue-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-blue-500">
                 <FontAwesomeIcon className="text-white" icon={faPen} />
               </button>
               <button className="bg-red-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-red-500">

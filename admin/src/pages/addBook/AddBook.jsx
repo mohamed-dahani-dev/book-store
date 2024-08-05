@@ -106,7 +106,6 @@ const AddBook = ({ url }) => {
     try {
       // use axios to send data to database
       const response = await axios.post(`${url}/add`, formData);
-      console.log(response);
       // logic of adding
       if (response.data.success) {
         // empty the inputs
@@ -166,7 +165,7 @@ const AddBook = ({ url }) => {
               name="title"
               placeholder="Enter title"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.title}
             />
             <p className={errorValidationStyle}>{errorValidation.title}</p>
           </div>
@@ -178,7 +177,7 @@ const AddBook = ({ url }) => {
               name="description"
               placeholder="Enter description"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.description}
               rows={5}
             ></textarea>
             <p className={errorValidationStyle}>
@@ -194,7 +193,7 @@ const AddBook = ({ url }) => {
               name="author"
               placeholder="Enter author"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.author}
             />
             <p className={errorValidationStyle}>{errorValidation.author}</p>
           </div>
@@ -207,7 +206,7 @@ const AddBook = ({ url }) => {
               name="ISBN"
               placeholder="Enter ISBN"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.ISBN}
             />
             <p className={errorValidationStyle}>{errorValidation.ISBN}</p>
           </div>
@@ -220,7 +219,7 @@ const AddBook = ({ url }) => {
               name="pages"
               placeholder="Enter pages"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.pages}
             />
             <p className={errorValidationStyle}>{errorValidation.pages}</p>
           </div>
@@ -234,7 +233,7 @@ const AddBook = ({ url }) => {
               name="rate"
               placeholder="Enter rate"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.rate}
             />
             <p className={errorValidationStyle}>{errorValidation.rate}</p>
           </div>
@@ -248,7 +247,7 @@ const AddBook = ({ url }) => {
               name="price"
               placeholder="Enter price"
               onChange={onChangeHandler}
-              value={data.name}
+              value={data.price}
             />
             <p className={errorValidationStyle}>{errorValidation.price}</p>
           </div>
@@ -259,6 +258,7 @@ const AddBook = ({ url }) => {
               id="category"
               className="p-2 rounded-md outline-none border text-black"
               onChange={onChangeHandler}
+              value={data.category}
             >
               {Categories.map((item, index) => {
                 return (
