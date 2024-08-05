@@ -26,7 +26,10 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center max-sm:flex-col gap-5">
       <div className="flex gap-2 items-center max-sm:gap-1">
-        <Link to="/" className="text-2xl font-bold text-rose-600 max-sm:text-lg">
+        <Link
+          to="/"
+          className="text-2xl font-bold text-rose-600 max-sm:text-lg"
+        >
           Admin Panel
         </Link>
         <FontAwesomeIcon className="text-2xl text-rose-600" icon={faBook} />

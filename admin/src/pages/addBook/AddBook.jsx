@@ -7,9 +7,18 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import * as Yub from "yup";
 
-const AddBook = ({ url }) => {
+const AddBook = ({ url, currentState, setCurrentState, itemUpdate }) => {
   // logic of image
   const [image, setImage] = useState(false);
+
+  const srcImage = () => {
+    if (currentState === "addBook") {
+      return image ? URL.createObjectURL(image) : uploadImge;
+    } else if (currentState === "updateBook" && itemUpdate) {
+      return `${url}/images/${itemUpdate.image}`;
+    }
+    return uploadImge; // Default to upload image if no conditions match
+  };
 
   // data
   const [data, setData] = useState({
@@ -105,7 +114,10 @@ const AddBook = ({ url }) => {
 
     try {
       // use axios to send data to database
-      const response = await axios.post(`${url}/add`, formData);
+      const response =
+        currentState === "addBook"
+          ? await axios.post(`${url}/add`, formData)
+          : await axios.put(`${url}/update/${itemUpdate._id}`, formData);
       // logic of adding
       if (response.data.success) {
         // empty the inputs
@@ -121,31 +133,38 @@ const AddBook = ({ url }) => {
         });
         setImage(false);
         toast.success(response.data.message);
+        // reset the current state to add book
+        setCurrentState("addBook");
       } else {
         toast.error(response.data.error);
       }
     } catch (error) {
-      toast.error("An error occurred while adding the book.", error);
+      currentState === "addBook"
+        ? toast.error("An error occurred while adding the book.", error)
+        : toast.error("An error occurred while updating the book.", error);
     }
+
+    // switch currentState to addBook
+    setCurrentState("addBook");
   };
 
   return (
     <section>
       <form onSubmit={onSubmitHandler} className="text-text_color">
-        <h1 className="text-2xl font-semibold text-rose-600">Add a book</h1>
+        <h1 className="text-2xl font-semibold text-rose-600">
+          {currentState === "addBook" ? "Add a book" : "Update a book"}
+        </h1>
         <div className="grid grid-cols-3 gap-8">
           <div className="flex flex-col gap-2">
             <p>Upload Image :</p>
             <label htmlFor="image">
-              <img
-                src={image ? URL.createObjectURL(image) : uploadImge}
-                className="w-20 cursor-pointer"
-                alt=""
-              />
+              <img src={srcImage()} className="w-20 cursor-pointer" alt="" />
             </label>
             <input
               className="p-2 rounded-md outline-none border"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+              }}
               type="file"
               hidden
               id="image"
@@ -165,7 +184,7 @@ const AddBook = ({ url }) => {
               name="title"
               placeholder="Enter title"
               onChange={onChangeHandler}
-              value={data.title}
+              value={currentState === "addBook" ? data.title : itemUpdate.title}
             />
             <p className={errorValidationStyle}>{errorValidation.title}</p>
           </div>
@@ -177,7 +196,11 @@ const AddBook = ({ url }) => {
               name="description"
               placeholder="Enter description"
               onChange={onChangeHandler}
-              value={data.description}
+              value={
+                currentState === "addBook"
+                  ? data.description
+                  : itemUpdate.description
+              }
               rows={5}
             ></textarea>
             <p className={errorValidationStyle}>
@@ -193,7 +216,9 @@ const AddBook = ({ url }) => {
               name="author"
               placeholder="Enter author"
               onChange={onChangeHandler}
-              value={data.author}
+              value={
+                currentState === "addBook" ? data.author : itemUpdate.author
+              }
             />
             <p className={errorValidationStyle}>{errorValidation.author}</p>
           </div>
@@ -206,7 +231,7 @@ const AddBook = ({ url }) => {
               name="ISBN"
               placeholder="Enter ISBN"
               onChange={onChangeHandler}
-              value={data.ISBN}
+              value={currentState === "addBook" ? data.ISBN : itemUpdate.ISBN}
             />
             <p className={errorValidationStyle}>{errorValidation.ISBN}</p>
           </div>
@@ -219,7 +244,7 @@ const AddBook = ({ url }) => {
               name="pages"
               placeholder="Enter pages"
               onChange={onChangeHandler}
-              value={data.pages}
+              value={currentState === "addBook" ? data.pages : itemUpdate.pages}
             />
             <p className={errorValidationStyle}>{errorValidation.pages}</p>
           </div>
@@ -228,12 +253,12 @@ const AddBook = ({ url }) => {
             <input
               className="p-2 rounded-md outline-none border"
               type="number"
-               step="0.01"
+              step="0.01"
               id="rate"
               name="rate"
               placeholder="Enter rate"
               onChange={onChangeHandler}
-              value={data.rate}
+              value={currentState === "addBook" ? data.rate : itemUpdate.rate}
             />
             <p className={errorValidationStyle}>{errorValidation.rate}</p>
           </div>
@@ -242,12 +267,12 @@ const AddBook = ({ url }) => {
             <input
               className="p-2 rounded-md outline-none border"
               type="number"
-               step="0.01"
+              step="0.01"
               id="price"
               name="price"
               placeholder="Enter price"
               onChange={onChangeHandler}
-              value={data.price}
+              value={currentState === "addBook" ? data.price : itemUpdate.price}
             />
             <p className={errorValidationStyle}>{errorValidation.price}</p>
           </div>
@@ -258,7 +283,9 @@ const AddBook = ({ url }) => {
               id="category"
               className="p-2 rounded-md outline-none border text-black"
               onChange={onChangeHandler}
-              value={data.category}
+              value={
+                currentState === "addBook" ? data.category : itemUpdate.category
+              }
             >
               {Categories.map((item, index) => {
                 return (
@@ -273,9 +300,13 @@ const AddBook = ({ url }) => {
         </div>
         <button
           type="submit"
-          className="bg-rose-600 text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-rose-500"
+          className={
+            currentState === "addBook"
+              ? "bg-rose-600 text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-rose-500"
+              : "bg-blue-600 text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-blue-500"
+          }
         >
-          Add
+          {currentState === "addBook" ? "Add" : "Update"} Book
         </button>
       </form>
     </section>

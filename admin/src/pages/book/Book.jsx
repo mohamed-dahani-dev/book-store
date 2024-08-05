@@ -6,8 +6,9 @@ import { toast } from "react-toastify";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faStar } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
-const Book = ({ url }) => {
+const Book = ({ url, setCurrentState, setItemUpdate }) => {
   // stock the books in useState
   const [list, setList] = useState([]);
 
@@ -30,6 +31,25 @@ const Book = ({ url }) => {
   useEffect(() => {
     fetchList();
   }, []);
+
+  // delete a book
+  const deleteBook = async (idBook) => {
+    try {
+      const response = await axios.delete(`${url}/book/${idBook}`);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchList(); // Re-fetch the list to update the UI
+      } else {
+        toast.error(response.data.error);
+      }
+    } catch (error) {
+      toast.error("Failed to delete the book.");
+      console.error("Error deleting book:", error);
+    }
+  };
+
+  // navigate to add book when you click the update button
+  const navigate = useNavigate();
 
   return (
     <section className="text-text_color">
@@ -62,10 +82,21 @@ const Book = ({ url }) => {
             <p>${item.price}</p>
             <p>{item.category}</p>
             <div className="flex gap-2">
-              <button className="bg-blue-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-blue-500">
+              <button
+                onClick={() => {
+                  setCurrentState("updateBook");
+                  navigate("/add");
+                  // add data of item to state
+                  setItemUpdate(item);
+                }}
+                className="bg-blue-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-blue-500"
+              >
                 <FontAwesomeIcon className="text-white" icon={faPen} />
               </button>
-              <button className="bg-red-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-red-500">
+              <button
+                onClick={() => deleteBook(item._id)}
+                className="bg-red-600 w-10 h-10 rounded-full flex justify-center items-center transition-all hover:bg-red-500"
+              >
                 <FontAwesomeIcon className="text-white" icon={faTrash} />
               </button>
             </div>
