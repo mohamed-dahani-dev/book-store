@@ -8,8 +8,8 @@ const Main = () => {
   const url = "http://localhost:3000";
 
   // switch between add book and update book
-  const [currentState, setCurrentState] = useState("addBook");
-  console.log(currentState);
+  const [updateBook, setUpdateBook] = useState(false);
+  console.log(updateBook);
 
   // transfer data from book to add book
   const [itemUpdate, setItemUpdate] = useState({});
@@ -17,7 +17,7 @@ const Main = () => {
 
   return (
     <main className=" mt-10 flex gap-20">
-      <LeftSide />
+      <LeftSide updateBook={updateBook} />
       <section className="w-full">
         <Routes>
           <Route
@@ -25,8 +25,8 @@ const Main = () => {
             element={
               <AddBook
                 url={url}
-                currentState={currentState}
-                setCurrentState={setCurrentState}
+                updateBook={updateBook}
+                setUpdateBook={setUpdateBook}
                 itemUpdate={itemUpdate}
               />
             }
@@ -36,7 +36,7 @@ const Main = () => {
             element={
               <Book
                 url={url}
-                setCurrentState={setCurrentState}
+                setUpdateBook={setUpdateBook}
                 setItemUpdate={setItemUpdate}
               />
             }

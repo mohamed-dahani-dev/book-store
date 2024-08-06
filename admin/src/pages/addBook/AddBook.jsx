@@ -1,46 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import uploadImge from "../../assets/upload img.png";
 import Categories from "../../assets/categories/Categories";
-
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as Yub from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const AddBook = ({ url, currentState, setCurrentState, itemUpdate }) => {
-  // logic of image
-  const [image, setImage] = useState(false);
-
-  const srcImage = () => {
-    if (currentState === "addBook") {
-      return image ? URL.createObjectURL(image) : uploadImge;
-    } else if (currentState === "updateBook" && itemUpdate) {
-      return `${url}/images/${itemUpdate.image}`;
-    }
-    return uploadImge; // Default to upload image if no conditions match
-  };
-
-  // data
-  const [data, setData] = useState({
-    title: "",
-    description: "",
-    author: "",
-    ISBN: "",
-    pages: "",
-    rate: "",
-    price: "",
-    category: "ROMANCE",
-  });
-
-  // error validation
-  const [errorValidation, setErrorValidation] = useState("");
-
-  // error validation style
-  const errorValidationStyle = "mb-1 text-red-600 text-sm";
-
-  // validation
+const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
+  // validation with YUP
   const validationSchema = Yub.object({
-    image: Yub.string().trim().required("The image is required"),
+    // image: Yub.string().trim().required("The image is required"),
     title: Yub.string()
       .trim()
       .min(1, "length must be at least 1 characters long")
@@ -78,235 +47,256 @@ const AddBook = ({ url, currentState, setCurrentState, itemUpdate }) => {
       .required("The category is required"),
   });
 
-  // fill the data
-  const onChangeHandler = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData((data) => ({ ...data, [name]: value }));
-  };
+  // data of form
+  // const [data, setData] = useState({
+  //   title: "",
+  //   description: "",
+  //   author: "",
+  //   ISBN: "",
+  //   pages: "",
+  //   rate: "",
+  //   price: "",
+  //   category: "ROMANCE",
+  // });
 
+  // useEffect(() => {
+  //   if (currentState === "updateBook" && itemUpdate) {
+  //     setData({
+  //       title: itemUpdate.title || "",
+  //       description: itemUpdate.description || "",
+  //       author: itemUpdate.author || "",
+  //       ISBN: itemUpdate.ISBN || "",
+  //       pages: itemUpdate.pages || "",
+  //       rate: itemUpdate.rate || "",
+  //       price: itemUpdate.price || "",
+  //       category: itemUpdate.category || "ROMANCE",
+  //     });
+  //     setImage(null);
+  //   }
+  // }, [currentState, itemUpdate]);
+
+  // const onChangeHandler = (event) => {
+  //   const { name, value, type, files } = event.target;
+  //   if (type === "file") {
+  //     setImage(files[0]);
+  //   } else {
+  //     setData((prevData) => ({ ...prevData, [name]: value }));
+  //   }
+  // };
+
+  // const onSubmitHandler = async (event) => {
+  //   event.preventDefault();
+
+  //   try {
+  //     await validationSchema.validate(data, { abortEarly: false });
+  //     const formData = new FormData();
+  //     formData.append("image", image);
+  //     Object.keys(data).forEach((key) => formData.append(key, data[key]));
+
+  //     const response =
+  //       currentState === "addBook"
+  //         ? await axios.post(`${url}/add`, formData)
+  //         : await axios.put(`${url}/update/${itemUpdate._id}`, formData);
+
+  //     if (response.data.success) {
+  //       setData({
+  //         title: "",
+  //         description: "",
+  //         author: "",
+  //         ISBN: "",
+  //         pages: "",
+  //         rate: "",
+  //         price: "",
+  //         category: "ROMANCE",
+  //       });
+  //       setImage(null);
+  //       toast.success(response.data.message);
+  //       setCurrentState("addBook");
+  //     } else {
+  //       toast.error(response.data.error);
+  //     }
+  //   } catch (error) {
+  //     const newError = {};
+  //     error.inner.forEach((err) => {
+  //       newError[err.path] = err.message;
+  //     });
+  //     setErrorValidation(newError);
+  //   }
+  // };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    // add validationSchema to resolver
+    resolver: yupResolver(validationSchema),
+  });
   // send data to database
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
+  const submitForm = async (data) => {
+    // Create a FormData object
+    const formData = new FormData();
 
-    // validation of inputs
-    try {
-      await validationSchema.validate(data, { abortEarly: false });
-    } catch (error) {
-      const newError = {};
-      error.inner.forEach((err) => {
-        newError[err.path] = err.message;
-        setErrorValidation(newError);
-      });
+    // Append all form fields to the FormData object
+    for (const key in data) {
+      if (key === "image") {
+        formData.append("image", data.image[0]); // Append the image file
+      } else {
+        formData.append(key, data[key]);
+      }
     }
 
-    // get data from the form
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    formData.append("author", data.author);
-    formData.append("ISBN", data.ISBN);
-    formData.append("pages", Number(data.pages));
-    formData.append("rate", Number(data.rate));
-    formData.append("price", Number(data.price));
-    formData.append("category", data.category);
-
     try {
-      // use axios to send data to database
-      const response =
-        currentState === "addBook"
-          ? await axios.post(`${url}/add`, formData)
-          : await axios.put(`${url}/update/${itemUpdate._id}`, formData);
-      // logic of adding
+      const response = updateBook
+        ? await axios.put(`${url}/update/${itemUpdate._id}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        : await axios.post(`${url}/add`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
       if (response.data.success) {
-        // empty the inputs
-        setData({
-          title: "",
-          description: "",
-          author: "",
-          ISBN: "",
-          pages: "",
-          rate: "",
-          price: "",
-          category: "ROMANCE",
-        });
-        setImage(false);
         toast.success(response.data.message);
-        // reset the current state to add book
-        setCurrentState("addBook");
+        reset();
+        setUpdateBook(false);
       } else {
         toast.error(response.data.error);
       }
     } catch (error) {
-      currentState === "addBook"
-        ? toast.error("An error occurred while adding the book.", error)
-        : toast.error("An error occurred while updating the book.", error);
+      console.log(error);
+      toast.error("An error occurred. Please try again.");
     }
-
-    // switch currentState to addBook
-    setCurrentState("addBook");
   };
 
   return (
     <section>
-      <form onSubmit={onSubmitHandler} className="text-text_color">
-        <h1 className="text-2xl font-semibold text-rose-600">
-          {currentState === "addBook" ? "Add a book" : "Update a book"}
+      <form onSubmit={handleSubmit(submitForm)} className="text-text_color">
+        <h1 className="text-2xl font-semibold text-rose-600 mb-10">
+          {!updateBook ? "Add a Book" : "Update Book"}
         </h1>
         <div className="grid grid-cols-3 gap-8">
           <div className="flex flex-col gap-2">
-            <p>Upload Image :</p>
-            <label htmlFor="image">
-              <img src={srcImage()} className="w-20 cursor-pointer" alt="" />
-            </label>
+            <label htmlFor="image">Upload Image:</label>
             <input
-              className="p-2 rounded-md outline-none border"
-              onChange={(e) => {
-                setImage(e.target.files[0]);
-              }}
+              className="text-sm  rounded-lg cursor-pointer text-gray-400 focus:outline-none bg-gray-700 p-2"
               type="file"
-              hidden
               id="image"
+              {...register("image")}
             />
-            {!image ? (
-              <p className={errorValidationStyle}>{errorValidation.image}</p>
-            ) : (
-              ""
-            )}
+            <p className="mb-1 text-red-600 text-sm">{errors.image?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="title">Title:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="text"
               id="title"
-              name="title"
               placeholder="Enter title"
-              onChange={onChangeHandler}
-              value={currentState === "addBook" ? data.title : itemUpdate.title}
+              {...register("title")}
             />
-            <p className={errorValidationStyle}>{errorValidation.title}</p>
+            <p className="mb-1 text-red-600 text-sm">{errors.title?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="description">Description:</label>
             <textarea
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               id="description"
-              name="description"
               placeholder="Enter description"
-              onChange={onChangeHandler}
-              value={
-                currentState === "addBook"
-                  ? data.description
-                  : itemUpdate.description
-              }
+              {...register("description")}
               rows={5}
             ></textarea>
-            <p className={errorValidationStyle}>
-              {errorValidation.description}
+            <p className="mb-1 text-red-600 text-sm">
+              {errors.description?.message}
             </p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="author">Author:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="text"
-              id="author"
               name="author"
               placeholder="Enter author"
-              onChange={onChangeHandler}
-              value={
-                currentState === "addBook" ? data.author : itemUpdate.author
-              }
+              {...register("author")}
             />
-            <p className={errorValidationStyle}>{errorValidation.author}</p>
+            <p className="mb-1 text-red-600 text-sm">
+              {errors.author?.message}
+            </p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="ISBN">ISBN:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="text"
               id="ISBN"
-              name="ISBN"
               placeholder="Enter ISBN"
-              onChange={onChangeHandler}
-              value={currentState === "addBook" ? data.ISBN : itemUpdate.ISBN}
+              {...register("ISBN")}
             />
-            <p className={errorValidationStyle}>{errorValidation.ISBN}</p>
+            <p className="mb-1 text-red-600 text-sm">{errors.ISBN?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="pages">Pages:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="number"
               id="pages"
-              name="pages"
               placeholder="Enter pages"
-              onChange={onChangeHandler}
-              value={currentState === "addBook" ? data.pages : itemUpdate.pages}
+              {...register("pages")}
             />
-            <p className={errorValidationStyle}>{errorValidation.pages}</p>
+            <p className="mb-1 text-red-600 text-sm">{errors.pages?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="rate">Rate:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="number"
               step="0.01"
               id="rate"
-              name="rate"
               placeholder="Enter rate"
-              onChange={onChangeHandler}
-              value={currentState === "addBook" ? data.rate : itemUpdate.rate}
+              {...register("rate")}
             />
-            <p className={errorValidationStyle}>{errorValidation.rate}</p>
+            <p className="mb-1 text-red-600 text-sm">{errors.rate?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="price">Price:</label>
             <input
-              className="p-2 rounded-md outline-none border"
+              className="p-2 rounded-md outline-none border text-black"
               type="number"
               step="0.01"
               id="price"
-              name="price"
               placeholder="Enter price"
-              onChange={onChangeHandler}
-              value={currentState === "addBook" ? data.price : itemUpdate.price}
+              {...register("price")}
             />
-            <p className={errorValidationStyle}>{errorValidation.price}</p>
+            <p className="mb-1 text-red-600 text-sm">{errors.price?.message}</p>
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="category">category:</label>
+            <label htmlFor="category">Category:</label>
             <select
-              name="category"
               id="category"
               className="p-2 rounded-md outline-none border text-black"
-              onChange={onChangeHandler}
-              value={
-                currentState === "addBook" ? data.category : itemUpdate.category
-              }
+              {...register("category")}
             >
-              {Categories.map((item, index) => {
-                return (
-                  <option key={index} value={item.name}>
-                    {item.name}
-                  </option>
-                );
-              })}
+              {Categories.map((item, index) => (
+                <option key={index} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
             </select>
-            <p className={errorValidationStyle}>{errorValidation.category}</p>
+            <p className="mb-1 text-red-600 text-sm">
+              {errors.category?.message}
+            </p>
           </div>
         </div>
         <button
           type="submit"
-          className={
-            currentState === "addBook"
-              ? "bg-rose-600 text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-rose-500"
-              : "bg-blue-600 text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-blue-500"
-          }
+          className={`${
+            !updateBook ? "bg-rose-600" : "bg-blue-600"
+          } text-white px-10 py-2 rounded-md mt-5 transition-all hover:bg-opacity-80`}
         >
-          {currentState === "addBook" ? "Add" : "Update"} Book
+          {!updateBook ? "Add" : "Update"} Book
         </button>
       </form>
     </section>

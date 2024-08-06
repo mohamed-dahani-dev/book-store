@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrash, faStar } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
-const Book = ({ url, setCurrentState, setItemUpdate }) => {
+const Book = ({ url, setUpdateBook, setItemUpdate }) => {
   // stock the books in useState
   const [list, setList] = useState([]);
 
@@ -84,7 +84,7 @@ const Book = ({ url, setCurrentState, setItemUpdate }) => {
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  setCurrentState("updateBook");
+                  setUpdateBook(true);
                   navigate("/add");
                   // add data of item to state
                   setItemUpdate(item);
