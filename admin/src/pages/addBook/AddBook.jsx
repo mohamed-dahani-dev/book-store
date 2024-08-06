@@ -47,83 +47,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
       .required("The category is required"),
   });
 
-  // data of form
-  // const [data, setData] = useState({
-  //   title: "",
-  //   description: "",
-  //   author: "",
-  //   ISBN: "",
-  //   pages: "",
-  //   rate: "",
-  //   price: "",
-  //   category: "ROMANCE",
-  // });
-
-  // useEffect(() => {
-  //   if (currentState === "updateBook" && itemUpdate) {
-  //     setData({
-  //       title: itemUpdate.title || "",
-  //       description: itemUpdate.description || "",
-  //       author: itemUpdate.author || "",
-  //       ISBN: itemUpdate.ISBN || "",
-  //       pages: itemUpdate.pages || "",
-  //       rate: itemUpdate.rate || "",
-  //       price: itemUpdate.price || "",
-  //       category: itemUpdate.category || "ROMANCE",
-  //     });
-  //     setImage(null);
-  //   }
-  // }, [currentState, itemUpdate]);
-
-  // const onChangeHandler = (event) => {
-  //   const { name, value, type, files } = event.target;
-  //   if (type === "file") {
-  //     setImage(files[0]);
-  //   } else {
-  //     setData((prevData) => ({ ...prevData, [name]: value }));
-  //   }
-  // };
-
-  // const onSubmitHandler = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     await validationSchema.validate(data, { abortEarly: false });
-  //     const formData = new FormData();
-  //     formData.append("image", image);
-  //     Object.keys(data).forEach((key) => formData.append(key, data[key]));
-
-  //     const response =
-  //       currentState === "addBook"
-  //         ? await axios.post(`${url}/add`, formData)
-  //         : await axios.put(`${url}/update/${itemUpdate._id}`, formData);
-
-  //     if (response.data.success) {
-  //       setData({
-  //         title: "",
-  //         description: "",
-  //         author: "",
-  //         ISBN: "",
-  //         pages: "",
-  //         rate: "",
-  //         price: "",
-  //         category: "ROMANCE",
-  //       });
-  //       setImage(null);
-  //       toast.success(response.data.message);
-  //       setCurrentState("addBook");
-  //     } else {
-  //       toast.error(response.data.error);
-  //     }
-  //   } catch (error) {
-  //     const newError = {};
-  //     error.inner.forEach((err) => {
-  //       newError[err.path] = err.message;
-  //     });
-  //     setErrorValidation(newError);
-  //   }
-  // };
-
+  // reactUseFormHook
   const {
     register,
     handleSubmit,
@@ -197,6 +121,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="title"
               placeholder="Enter title"
               {...register("title")}
+              defaultValue={itemUpdate.title}
             />
             <p className="mb-1 text-red-600 text-sm">{errors.title?.message}</p>
           </div>
@@ -206,8 +131,9 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               className="p-2 rounded-md outline-none border text-black"
               id="description"
               placeholder="Enter description"
-              {...register("description")}
               rows={5}
+              {...register("description")}
+              defaultValue={itemUpdate.description}
             ></textarea>
             <p className="mb-1 text-red-600 text-sm">
               {errors.description?.message}
@@ -221,6 +147,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               name="author"
               placeholder="Enter author"
               {...register("author")}
+              defaultValue={itemUpdate.author}
             />
             <p className="mb-1 text-red-600 text-sm">
               {errors.author?.message}
@@ -234,6 +161,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="ISBN"
               placeholder="Enter ISBN"
               {...register("ISBN")}
+              defaultValue={itemUpdate.ISBN}
             />
             <p className="mb-1 text-red-600 text-sm">{errors.ISBN?.message}</p>
           </div>
@@ -245,6 +173,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="pages"
               placeholder="Enter pages"
               {...register("pages")}
+              defaultValue={itemUpdate.pages}
             />
             <p className="mb-1 text-red-600 text-sm">{errors.pages?.message}</p>
           </div>
@@ -257,6 +186,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="rate"
               placeholder="Enter rate"
               {...register("rate")}
+              defaultValue={itemUpdate.rate}
             />
             <p className="mb-1 text-red-600 text-sm">{errors.rate?.message}</p>
           </div>
@@ -269,6 +199,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="price"
               placeholder="Enter price"
               {...register("price")}
+              defaultValue={itemUpdate.price}
             />
             <p className="mb-1 text-red-600 text-sm">{errors.price?.message}</p>
           </div>
@@ -278,6 +209,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
               id="category"
               className="p-2 rounded-md outline-none border text-black"
               {...register("category")}
+              defaultValue={itemUpdate.category}
             >
               {Categories.map((item, index) => (
                 <option key={index} value={item.name}>

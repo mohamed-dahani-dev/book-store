@@ -9,11 +9,9 @@ const Main = () => {
 
   // switch between add book and update book
   const [updateBook, setUpdateBook] = useState(false);
-  console.log(updateBook);
 
   // transfer data from book to add book
   const [itemUpdate, setItemUpdate] = useState({});
-  console.log(itemUpdate);
 
   return (
     <main className=" mt-10 flex gap-20">

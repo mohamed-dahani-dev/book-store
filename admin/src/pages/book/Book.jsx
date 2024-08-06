@@ -34,17 +34,19 @@ const Book = ({ url, setUpdateBook, setItemUpdate }) => {
 
   // delete a book
   const deleteBook = async (idBook) => {
-    try {
-      const response = await axios.delete(`${url}/book/${idBook}`);
-      if (response.data.success) {
-        toast.success(response.data.message);
-        fetchList(); // Re-fetch the list to update the UI
-      } else {
-        toast.error(response.data.error);
+    if (confirm("Are you sure you want to delete") === true) {
+      try {
+        const response = await axios.delete(`${url}/book/${idBook}`);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          fetchList(); // Re-fetch the list to update the UI
+        } else {
+          toast.error(response.data.error);
+        }
+      } catch (error) {
+        toast.error("Failed to delete the book.");
+        console.error("Error deleting book:", error);
       }
-    } catch (error) {
-      toast.error("Failed to delete the book.");
-      console.error("Error deleting book:", error);
     }
   };
 
