@@ -21,7 +21,7 @@ const loginAdmin = async (req, res) => {
     }
 
     // check if the admin already exists
-    const admin = await Admin.findOne({ email: req.body.email });
+    let admin = await Admin.findOne({ email: req.body.email });
     if (!admin) {
       return res.json({
         error: "email or password incorrect or invalid",
