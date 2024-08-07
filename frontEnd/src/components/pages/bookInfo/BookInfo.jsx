@@ -8,13 +8,13 @@ import { toast } from "react-toastify";
 
 const BookInfo = () => {
   // data of choose book
-  const { chooseBook, addToCart, cartItems } = useContext(StoreContext);
+  const { chooseBook, addToCart, cartItems, url } = useContext(StoreContext);
 
   return (
     <section className="mt-10 text-text_color flex gap-10 max-sm:flex-col">
       <div className="text-sm max-sm:flex flex-col items-center">
         <img
-          src={chooseBook.image}
+          src={`${url}/images/${chooseBook.image}`}
           alt=""
           className="w-48 shadow-2xl rounded-md"
         />

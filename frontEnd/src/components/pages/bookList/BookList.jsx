@@ -1,13 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import categoriesList from "../../../assets/categories/Categories";
-import Book from "../../../assets/book/Book";
+// import Book from "../../../assets/book/Book";
 import { useContext, useState, useEffect } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const BookList = () => {
-  const [bookFilter, setBookFilter] = useState(Book);
-  const { category, setCategory, setChooseBook } = useContext(StoreContext);
+  // get the book list from database
+  const fetchList = async () => {
+    try {
+      const response = await axios.get(`${url}/book`);
+      if (response.data.success) {
+        setBookFilter(response.data.data);
+      } else {
+        console.error("Failed to fetch books:", response.data.error);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch books");
+      console.error("Error fetching books:", error);
+    }
+  };
+
+  const [bookFilter, setBookFilter] = useState([]);
+  const { category, setCategory, setChooseBook, url } =
+    useContext(StoreContext);
+
+  // useLocation Hook
   const location = useLocation();
 
   const filterBooks = (books, categoryFilter, searchQuery) => {
@@ -16,7 +36,9 @@ const BookList = () => {
         categoryFilter === "All" ? true : book.category === categoryFilter
       )
       .filter((book) =>
-        searchQuery ? book.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
+        searchQuery
+          ? book.title.toLowerCase().includes(searchQuery.toLowerCase())
+          : true
       );
   };
 
@@ -33,9 +55,18 @@ const BookList = () => {
       setCategory(categoryParam);
     }
 
-    const filteredBooks = filterBooks(Book, categoryParam || category, queryParam);
+    const filteredBooks = filterBooks(
+      bookFilter,
+      categoryParam || category,
+      queryParam
+    );
     setBookFilter(filteredBooks);
   }, [location.search, category]);
+
+  // run fetchList function when the page is render
+  useEffect(() => {
+    fetchList();
+  }, []);
 
   return (
     <section className="mt-10">
@@ -67,7 +98,7 @@ const BookList = () => {
               setChooseBook(item);
             }}
           >
-            <img src={item.image} alt="" className="rounded-md shadow-2xl" />
+            <img src={`${url}/images/${item.image}`} alt="" className="rounded-md shadow-2xl" />
             <h3 className="text-text_color text-lg max-w-52">{item.title}</h3>
           </Link>
         ))}

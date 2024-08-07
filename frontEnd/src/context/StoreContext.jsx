@@ -4,6 +4,9 @@ import { createContext, useState, useEffect } from "react";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
+  // url of backend
+  const url = "http://localhost:3000";
+
   // categories
   const [category, setCategory] = useState("All");
 
@@ -40,6 +43,7 @@ const StoreContextProvider = (props) => {
     setCartItems,
     addToCart,
     removeFromCart,
+    url,
   };
 
   return (

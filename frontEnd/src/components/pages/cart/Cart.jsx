@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   // data of books cart
-  const { cartItems, removeFromCart } = useContext(StoreContext);
+  const { cartItems, removeFromCart, url } = useContext(StoreContext);
 
   // Calculate total price
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
@@ -47,7 +47,7 @@ const Cart = () => {
           className="text-text_color grid grid-cols-4 gap-10 items-center text-center py-5"
         >
           <img
-            src={item.image}
+            src={`${url}/images/${item.image}`}
             className="w-16 object-cover mx-auto rounded-md"
             alt={item.title}
           />
