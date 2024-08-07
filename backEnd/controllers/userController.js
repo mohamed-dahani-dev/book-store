@@ -29,9 +29,7 @@ const registerUser = async (req, res) => {
     // check if the user already registered
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res
-        .status(400)
-        .json({ error: "This user already exists", success: false });
+      return res.json({ error: "This user already exists", success: false });
     }
 
     // hashing the password
@@ -78,7 +76,7 @@ const loginUser = async (req, res) => {
     // check if the user exists
     let user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(400).json({
+      return res.json({
         error: "email or password incorrect or invalid",
         success: false,
       });
@@ -90,7 +88,7 @@ const loginUser = async (req, res) => {
       user.password
     );
     if (!isPasswordMatch) {
-      return res.status(400).json({
+      return res.json({
         error: "email or password incorrect or invalid",
         success: false,
       });
