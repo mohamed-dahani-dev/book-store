@@ -23,7 +23,7 @@ const loginAdmin = async (req, res) => {
     // check if the admin already exists
     const admin = await Admin.findOne({ email: req.body.email });
     if (!admin) {
-      return res.status(404).json({
+      return res.json({
         error: "email or password incorrect or invalid",
         success: false,
       });
@@ -31,7 +31,7 @@ const loginAdmin = async (req, res) => {
 
     // check if the password is match before login
     if (req.body.password !== admin.password) {
-      return res.status(400).json({
+      return res.json({
         error: "email or password incorrect or invalid",
         success: false,
       });
