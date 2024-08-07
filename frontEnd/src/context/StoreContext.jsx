@@ -7,6 +7,13 @@ const StoreContextProvider = (props) => {
   // url of backend
   const url = "http://localhost:3000";
 
+  // check if user is login
+  const [isLogin, setIsLogin] = useState(false);
+
+  // name of user
+  const [userName, setUserName] = useState("");
+  console.log(userName);
+
   // categories
   const [category, setCategory] = useState("All");
 
@@ -44,6 +51,10 @@ const StoreContextProvider = (props) => {
     addToCart,
     removeFromCart,
     url,
+    isLogin,
+    setIsLogin,
+    userName,
+    setUserName,
   };
 
   return (

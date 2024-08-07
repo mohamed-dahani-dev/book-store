@@ -6,13 +6,18 @@ import {
   faSun,
   faBook,
   faCartShopping,
+  faChevronDown,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
+import { toast } from "react-toastify";
 
 const Header = () => {
   // State for theme
-  const [theme, setTheme] = useState(localStorage.getItem("currentMode") ?? "light");
+  const [theme, setTheme] = useState(
+    localStorage.getItem("currentMode") ?? "light"
+  );
   useEffect(() => {
     if (theme === "light") {
       document.body.classList.remove("dark");
@@ -28,14 +33,15 @@ const Header = () => {
   const navigate = useNavigate(); // To programmatically navigate
 
   // Context for cart
-  const { cartItems, setCategory } = useContext(StoreContext);
+  const { cartItems, setCategory, isLogin, setIsLogin, userName } =
+    useContext(StoreContext);
 
   // Handle search
   const handleSearch = () => {
     if (searchQuery.trim()) {
       // Navigate to search results page with the search query
       navigate(`/book?query=${encodeURIComponent(searchQuery.trim())}`);
-      setCategory("All")
+      setCategory("All");
     }
   };
 
@@ -76,12 +82,37 @@ const Header = () => {
               </span>
             )}
           </Link>
-          <Link
-            to="/login"
-            className="border-[1.5px] py-1 px-5 rounded-md transition-all hover:bg-white hover:text-rose-600"
-          >
-            Login
-          </Link>
+          {isLogin ? (
+            <div className="relative flex flex-col items-center justify-center group">
+              <h3 className="text-white font-semibold cursor-pointer max-sm:text-sm">
+                {userName}
+              </h3>
+              <FontAwesomeIcon
+                className="text-white cursor-pointer"
+                icon={faChevronDown}
+              />
+              <button
+                className="hidden group-hover:flex items-center gap-4 bg-rose-600 px-10 py-2 rounded-md top-10 absolute cursor-pointer border-2 transition-all hover:bg-rose-500"
+                onClick={() => {
+                  setIsLogin(false);
+                  toast.success("Logout was successful");
+                }}
+              >
+                <FontAwesomeIcon
+                  className="text-white max-sm:text-sm"
+                  icon={faRightFromBracket}
+                />
+                <h3 className="text-white max-sm:text-sm">Logout</h3>
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="border-[1.5px] py-1 px-5 rounded-md transition-all hover:bg-white hover:text-rose-600"
+            >
+              Login
+            </Link>
+          )}
           <button
             className="border-[1.5px] rounded-full h-9 w-9 flex items-center justify-center"
             onClick={() => {

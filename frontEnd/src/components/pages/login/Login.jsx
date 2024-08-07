@@ -1,13 +1,63 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { StoreContext } from "../../../context/StoreContext";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   // toggling between login and Register
   const [currentState, setCurrentState] = useState("Login");
 
+  const { url, setIsLogin, setUserName } = useContext(StoreContext);
+
+  const { register, handleSubmit, reset } = useForm();
+
+  const navigate = useNavigate();
+
+  // login or register
+  const formSubmit = async (data) => {
+    try {
+      if (currentState === "Login") {
+        const response = await axios.post(`${url}/user/login`, data);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          reset();
+          setIsLogin(true);
+          setUserName(response.data.userName);
+          navigate("/");
+        } else {
+          toast.error(response.data.error);
+        }
+      } else if (currentState === "Register") {
+        const response = await axios.post(`${url}/user/register`, data);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          reset();
+          setIsLogin(true);
+          setUserName(response.data.userName);
+          navigate("/");
+        } else {
+          toast.error(response.data.error);
+        }
+      } else {
+        const response = await axios.post(`${url}/user/forgot-password`, data);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          reset();
+        } else {
+          toast.error(response.data.error);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+
   return (
     <form
-      action=""
-      method=""
+      onSubmit={handleSubmit(formSubmit)}
       className="text-text_color border-[1px] border-border_nav rounded-lg mt-10 py-5 px-4 flex flex-col gap-8 shadow-2xl w-[70%] m-auto max-sm:w-[90%]"
     >
       <h1 className="font-bold text-3xl text-rose-600 mb-5">{currentState}</h1>
@@ -21,7 +71,7 @@ const Login = () => {
               placeholder="First Name"
               id="firstName"
               name="firstName"
-              required
+              {...register("firstName")}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -32,7 +82,7 @@ const Login = () => {
               placeholder="Last Name"
               id="lastName"
               name="lastName"
-              required
+              {...register("lastName")}
             />
           </div>
 
@@ -44,7 +94,7 @@ const Login = () => {
               placeholder="Your Birthday"
               id="birthday"
               name="birthday"
-              required
+              {...register("birthday")}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -53,6 +103,7 @@ const Login = () => {
               name="gender"
               id="gender"
               className="border border-black w-full px-2 py-3 rounded-md"
+              {...register("gender")}
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -68,7 +119,7 @@ const Login = () => {
           placeholder="Email"
           id="email"
           name="email"
-          required
+          {...register("email")}
         />
       </div>
       {currentState === "Forgot Password" ? (
@@ -82,7 +133,7 @@ const Login = () => {
             placeholder="Enter Password"
             id="password"
             name="password"
-            required
+            {...register("password")}
           />
         </div>
       )}
