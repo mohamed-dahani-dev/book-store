@@ -12,6 +12,7 @@ connectToMongoDB();
 
 // get the path of routes
 const bookPath = require("./routes/book"); // import books from routes files
+const adminPath = require("./routes/admin"); // import admin from routes files
 
 // middlewares
 app.use(express.json()); // read the body parameters
@@ -19,6 +20,7 @@ app.use(cors()); // use the api from anywhere
 app.use("/images", express.static("uploads")); // read the static file like images
 // call all routes
 app.use("/", bookPath);
+app.use("/", adminPath);
 
 // run the server
 const port = process.env.PORT || 3000;
