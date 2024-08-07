@@ -39,9 +39,12 @@ const loginAdmin = async (req, res) => {
 
     // create token
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET_KEY);
-    res
-      .status(200)
-      .json({ message: "Login successful", success: true, token: token });
+    res.status(200).json({
+      message: "Login successful",
+      success: true,
+      token: token,
+      name: admin.name,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Something went wrong", success: false });

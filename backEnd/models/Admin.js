@@ -7,6 +7,13 @@ const Joi = require("joi");
 // create schema for book
 const adminSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      trim: true,
+      minLength: 3,
+      maxLength: 100,
+      required: true,
+    },
     email: {
       type: String,
       trim: true,
