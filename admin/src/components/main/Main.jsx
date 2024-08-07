@@ -1,12 +1,11 @@
+/* eslint-disable react/prop-types */
 import { Route, Routes } from "react-router-dom";
 import LeftSide from "../leftSide/LeftSide";
 import AddBook from "../../pages/addBook/AddBook";
 import Book from "../../pages/book/Book";
 import { useState } from "react";
 
-const Main = () => {
-  const url = "http://localhost:3000";
-
+const Main = ({ url }) => {
   // switch between add book and update book
   const [updateBook, setUpdateBook] = useState(false);
 

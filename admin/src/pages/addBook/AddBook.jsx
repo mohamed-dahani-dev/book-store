@@ -14,7 +14,7 @@ const AddBook = ({ url, updateBook, setUpdateBook, itemUpdate }) => {
       .trim()
       .min(1, "length must be at least 1 characters long")
       .max(255, "length must be at most 255 characters long")
-      .required("The title is required"),
+      .required(""),
     description: Yub.string()
       .trim()
       .min(10, "length must be at least 10 characters long")
