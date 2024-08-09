@@ -15,7 +15,7 @@ const Categories = () => {
         {CategoriesList.map((item, index) => {
           return (
             <Link
-              to={`book?Category=${item.name}`}
+              to={`book?category=${item.name}`}
               key={index}
               className="relative cursor-pointer"
             >

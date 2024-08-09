@@ -33,7 +33,7 @@ const Header = () => {
   const navigate = useNavigate(); // To programmatically navigate
 
   // Context for cart
-  const { cartItems, setCategory, isLogin, setIsLogin, userName } =
+  const { cartItems, setCategory, isLogin, setIsLogin, userName, setUserToken } =
     useContext(StoreContext);
 
   // Handle search
@@ -95,6 +95,7 @@ const Header = () => {
                 className="hidden group-hover:flex items-center gap-4 bg-rose-600 px-10 py-2 rounded-md top-10 absolute cursor-pointer border-2 transition-all hover:bg-rose-500"
                 onClick={() => {
                   setIsLogin(false);
+                  setUserToken(localStorage.removeItem("user_token"));
                   toast.success("Logout was successful");
                 }}
               >

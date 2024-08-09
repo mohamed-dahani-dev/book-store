@@ -1,17 +1,71 @@
 import { useContext, useState } from "react";
 import { StoreContext } from "../../../context/StoreContext";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  // validation register with YUP
+  const validationSchemaRegister = Yup.object({
+    firstName: Yup.string()
+      .trim()
+      .min(3, "length must be at least 5 characters long")
+      .max(100, "length must be at most 100 characters long")
+      .required("The first name is required"),
+    lastName: Yup.string()
+      .trim()
+      .min(3, "length must be at least 5 characters long")
+      .max(100, "length must be at most 100 characters long")
+      .required("The last name is required"),
+    birthday: Yup.date().required("The birthday is required"),
+    gender: Yup.string().trim().required("The gender is required"),
+    email: Yup.string()
+      .email("Invalid email")
+      .trim()
+      .min(5, "length must be at least 5 characters long")
+      .max(255, "length must be at most 255 characters long")
+      .required("The email is required"),
+    password: Yup.string()
+      .trim()
+      .min(8, "length must be at least 5 characters long")
+      .required("The password is required"),
+  });
+
+  // validation login with YUP
+  const validationSchemaLogin = Yup.object({
+    email: Yup.string()
+      .email("Invalid email")
+      .trim()
+      .min(5, "length must be at least 5 characters long")
+      .max(255, "length must be at most 255 characters long")
+      .required("The email is required"),
+    password: Yup.string()
+      .trim()
+      .min(8, "length must be at least 5 characters long")
+      .required("The password is required"),
+  });
+
   // toggling between login and Register
   const [currentState, setCurrentState] = useState("Login");
 
-  const { url, setIsLogin, setUserName } = useContext(StoreContext);
+  const { url, setIsLogin, setUserName, setUserToken } =
+    useContext(StoreContext);
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(
+      currentState === "Login"
+        ? validationSchemaLogin
+        : validationSchemaRegister
+    ),
+  });
 
   const navigate = useNavigate();
 
@@ -25,6 +79,7 @@ const Login = () => {
           reset();
           setIsLogin(true);
           setUserName(response.data.userName);
+          setUserToken(localStorage.setItem("user_token", response.data.token));
           navigate("/");
         } else {
           toast.error(response.data.error);
@@ -66,61 +121,74 @@ const Login = () => {
           <div className="flex flex-col gap-2">
             <label htmlFor="firstName">First Name:</label>
             <input
-              className="border border-black w-full px-2 py-3 rounded-md outline-none"
+              className="text-black border border-black w-full px-2 py-3 rounded-md outline-none"
               type="text"
               placeholder="First Name"
               id="firstName"
               name="firstName"
               {...register("firstName")}
             />
+            <p className="mt-1 text-red-600 text-sm">
+              {errors.firstName?.message}
+            </p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="lastName">Last Name:</label>
             <input
-              className="border border-black w-full px-2 py-3 rounded-md outline-none"
+              className="text-black border border-black w-full px-2 py-3 rounded-md outline-none"
               type="text"
               placeholder="Last Name"
               id="lastName"
               name="lastName"
               {...register("lastName")}
             />
+            <p className="mt-1 text-red-600 text-sm">
+              {errors.lastName?.message}
+            </p>
           </div>
 
           <div className="flex flex-col gap-2">
             <label htmlFor="birthday">Your Birthday:</label>
             <input
-              className="border border-black w-full px-2 py-3 rounded-md outline-none"
+              className="text-black border border-black w-full px-2 py-3 rounded-md outline-none"
               type="date"
               placeholder="Your Birthday"
               id="birthday"
               name="birthday"
               {...register("birthday")}
             />
+            <p className="mt-1 text-red-600 text-sm">
+              {errors.birthday?.message}
+            </p>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="gender">Gender:</label>
             <select
               name="gender"
               id="gender"
-              className="border border-black w-full px-2 py-3 rounded-md"
+              className="text-black border border-black w-full px-2 py-3 rounded-md"
               {...register("gender")}
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
+            <p className="mt-1 text-red-600 text-sm">
+              {errors.gender?.message}
+            </p>
           </div>
         </div>
       )}
       <div className="flex flex-col gap-2">
         <label htmlFor="email">Email:</label>
         <input
-          className="border border-black w-full px-2 py-3 rounded-md outline-none"
+          className="text-black border border-black w-full px-2 py-3 rounded-md outline-none"
           type="text"
           placeholder="Email"
           id="email"
           name="email"
           {...register("email")}
         />
+        <p className="mt-1 text-red-600 text-sm">{errors.email?.message}</p>
       </div>
       {currentState === "Forgot Password" ? (
         <></>
@@ -128,13 +196,16 @@ const Login = () => {
         <div className="flex flex-col gap-2">
           <label htmlFor="password">Enter Password:</label>
           <input
-            className="border border-black w-full px-2 py-3 rounded-md outline-none"
+            className="text-black border border-black w-full px-2 py-3 rounded-md outline-none"
             type="password"
             placeholder="Enter Password"
             id="password"
             name="password"
             {...register("password")}
           />
+          <p className="mt-1 text-red-600 text-sm">
+            {errors.password?.message}
+          </p>
         </div>
       )}
       <button

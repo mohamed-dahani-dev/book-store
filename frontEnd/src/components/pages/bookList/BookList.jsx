@@ -1,19 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import categoriesList from "../../../assets/categories/Categories";
-// import Book from "../../../assets/book/Book";
 import { useContext, useState, useEffect } from "react";
 import { StoreContext } from "../../../context/StoreContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const BookList = () => {
-  // get the book list from database
+  const [books, setBooks] = useState([]); // Store the full list of books
+  const [bookFilter, setBookFilter] = useState([]); // Store the filtered list
+
+  const { category, setCategory, setChooseBook, url } = useContext(StoreContext);
+  const location = useLocation();
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
+  // Fetch the book list from the database
   const fetchList = async () => {
     try {
       const response = await axios.get(`${url}/book`);
       if (response.data.success) {
-        setBookFilter(response.data.data);
+        setBooks(response.data.data); // Set the full list of books
+        setBookFilter(response.data.data); // Initially set the filtered list to the full list
       } else {
         console.error("Failed to fetch books:", response.data.error);
       }
@@ -22,13 +29,6 @@ const BookList = () => {
       console.error("Error fetching books:", error);
     }
   };
-
-  const [bookFilter, setBookFilter] = useState([]);
-  const { category, setCategory, setChooseBook, url } =
-    useContext(StoreContext);
-
-  // useLocation Hook
-  const location = useLocation();
 
   const filterBooks = (books, categoryFilter, searchQuery) => {
     return books
@@ -44,11 +44,12 @@ const BookList = () => {
 
   const handleClick = (bookCategory) => {
     setCategory(bookCategory);
+    navigate(`?category=${bookCategory}`); // Update the URL with the selected category
   };
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const categoryParam = searchParams.get("category");
+    const categoryParam = searchParams.get("category"); // Read 'category' from the URL
     const queryParam = searchParams.get("query");
 
     if (categoryParam) {
@@ -56,14 +57,14 @@ const BookList = () => {
     }
 
     const filteredBooks = filterBooks(
-      bookFilter,
+      books, // Use the full list of books for filtering
       categoryParam || category,
       queryParam
     );
-    setBookFilter(filteredBooks);
-  }, [location.search, category]);
+    setBookFilter(filteredBooks); // Update the filtered list
+  }, [location.search, books]); // Re-run when location.search or books change
 
-  // run fetchList function when the page is render
+  // Run fetchList function when the page is rendered
   useEffect(() => {
     fetchList();
   }, []);
@@ -76,8 +77,8 @@ const BookList = () => {
           name=""
           id=""
           className="text-black text-center p-[2px] outline-none rounded-md border-2"
-          value={category}
-          onChange={(e) => handleClick(e.target.value)}
+          value={category} // Reflect the current category state
+          onChange={(e) => handleClick(e.target.value)} // Call handleClick on change
         >
           <option value="All">All</option>
           {categoriesList.map((item, index) => (

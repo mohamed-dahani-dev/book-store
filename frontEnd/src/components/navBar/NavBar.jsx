@@ -61,7 +61,7 @@ const NavBar = () => {
               onClick={() => {
                 setShowMenu(false);
               }}
-              to="/books"
+              to="/book"
               className="py-2 px-4 rounded-md transition-all font-semibold"
             >
               Books

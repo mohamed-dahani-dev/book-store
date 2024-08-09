@@ -12,8 +12,9 @@ const StoreContextProvider = (props) => {
 
   // name of user
   const [userName, setUserName] = useState("");
-  console.log(userName);
 
+  // token of user
+  const [userToken, setUserToken] = useState("");
   // categories
   const [category, setCategory] = useState("All");
 
@@ -31,6 +32,14 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     localStorage.setItem("bookCartItems", JSON.stringify(cartItems));
   }, [cartItems]);
+
+  // still user login when he reload the website
+  useEffect(() => {
+    if (localStorage.getItem("user_token")) {
+      setUserToken(localStorage.getItem("user_token"));
+      setIsLogin(true);
+    }
+  }, []);
 
   const addToCart = (book) => {
     setCartItems((prevItems) => [...prevItems, book]);
@@ -55,6 +64,8 @@ const StoreContextProvider = (props) => {
     setIsLogin,
     userName,
     setUserName,
+    userToken,
+    setUserToken,
   };
 
   return (
