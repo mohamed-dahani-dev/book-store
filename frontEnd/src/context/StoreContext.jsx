@@ -5,7 +5,7 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   // url of backend
-  const url = "http://localhost:3000";
+  const url = "https://book-store-backend-byet.onrender.com";
 
   // check if user is login
   const [isLogin, setIsLogin] = useState(false);
